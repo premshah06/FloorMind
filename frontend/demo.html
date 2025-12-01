@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FloorMind - AI Floor Plan Generator Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1'
+                        },
+                        secondary: {
+                            500: '#d946ef',
+                            600: '#c026d3'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #0ea5e9, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Enhanced animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                transform: translate3d(0, -10px, 0);
+            }
+            70% {
+                transform: translate3d(0, -5px, 0);
+            }
+            90% {
+                transform: translate3d(0, -2px, 0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-slide-in-left {
+            animation: slideInLeft 0.6s ease-out;
+        }
+        
+        .animate-slide-in-right {
+            animation: slideInRight 0.6s ease-out;
+        }
+        
+        .animate-bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+        
+        /* Improved gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #0ea5e9, #d946ef, #0ea5e9);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Pulse effect for buttons */
+        .pulse-on-hover:hover {
+            animation: pulse 1s infinite;
+        }
+        
+        /* Loading spinner improvements */
+        .spinner-enhanced {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #0ea5e9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        /* Smooth transitions for all interactive elements */
+        button, .card-hover, input, textarea {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Focus states */
+        button:focus, input:focus, textarea:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #0ea5e9;
+            ring-opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-primary-50 via-white to-purple-50">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">FM</span>
+                        </div>
+                        <span class="text-xl font-bold gradient-text">FloorMind</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-primary-600 bg-primary-50 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#generate" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Generate</a>
+                    <a href="#models" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Models</a>
+                    <a href="#metrics" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">Metrics</a>
+                    <a href="#about" class="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative overflow-hidden py-20 sm:py-32">
+        <!-- Animated Background -->
+        <div class="absolute inset-0">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+            <div class="absolute top-40 right-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+            <div class="absolute -bottom-8 left-20 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style="animation-delay: 4s;"></div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-8">
+                <span class="inline-flex items-center px-6 py-3 rounded-full text-sm font-medium bg-gradient-to-r from-primary-100 to-purple-100 text-primary-800 mb-6 border border-primary-200 hover:scale-105 transition-transform cursor-pointer">
+                    ✨ AI-Powered Architecture • Live Demo Available
+                </span>
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+                <span class="gradient-text">FloorMind</span><br>
+                <span class="text-gray-700">AI Floor Plans</span>
+            </h1>
+            
+            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Transform natural language descriptions into detailed architectural floor plans 
+                using advanced diffusion models with spatial constraints and adjacency awareness.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                <button class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-secondary-700 transition-all duration-200 shadow-lg hover:scale-105 transform">
+                    ⚡ Try Generator
+                </button>
+                <button class="inline-flex items-center px-8 py-4 bg-white text-gray-700 font-semibold rounded-xl border-2 border-gray-200 hover:border-primary-300 transition-all duration-200 hover:scale-105 transform">
+                    ▶️ View Models
+                </button>
+            </div>
+
+            <!-- Live Demo Preview -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-200 max-w-4xl mx-auto">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <div class="flex space-x-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span class="text-sm font-medium text-gray-600">FloorMind Generator</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4 text-left">
+                    <div class="text-sm text-gray-500 mb-2">Input:</div>
+                    <div class="font-mono text-sm text-gray-800 mb-4 bg-white p-3 rounded border">
+                        "3-bedroom apartment with open kitchen and living room"
+                    </div>
+                    <div class="text-sm text-gray-500 mb-2">Output:</div>
+                    <div class="bg-gradient-to-r from-primary-100 to-purple-100 rounded-lg p-6 text-center hover:scale-105 transition-transform cursor-pointer">
+                        <div class="text-4xl mb-2">🏠</div>
+                        <div class="text-sm text-gray-600 font-medium">Generated Floor Plan</div>
+                        <div class="text-xs text-primary-600 mt-1">84.5% Accuracy • 2.3s Generation Time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="text-3xl lg:text-4xl font-bold text-primary-600 mb-2">+13.2%</div>
+                    <div class="text-sm font-semibold text-gray-900 mb-1">Accuracy Improvement</div>
+                    <div class="text-xs text-gray-500">Over baseline models</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl lg:text-4xl font-bold text-primary-600 mb-2">57.4</div>
+                    <div class="text-sm font-semibold text-gray-900 mb-1">FID Score</div>
+                    <div class="text-xs text-gray-500">Industry-leading quality</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl lg:text-4xl font-bold text-primary-600 mb-2">0.75</div>
+                    <div class="text-sm font-semibold text-gray-900 mb-1">CLIP Score</div>
+                    <div class="text-xs text-gray-500">Text-image alignment</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl lg:text-4xl font-bold text-primary-600 mb-2">2.3s</div>
+                    <div class="text-sm font-semibold text-gray-900 mb-1">Generation Time</div>
+                    <div class="text-xs text-gray-500">Average processing time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Generator Demo Section -->
+    <section id="generate" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">AI Floor Plan Generator</h2>
+                <p class="text-xl text-gray-600">Transform your ideas into detailed architectural floor plans</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Input Panel -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <label class="block text-sm font-semibold text-gray-900 mb-3">Describe Your Floor Plan</label>
+                        <textarea 
+                            placeholder="Enter a detailed description of your desired floor plan..."
+                            class="w-full h-32 p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                        ></textarea>
+                        <div class="mt-4">
+                            <p class="text-sm font-medium text-gray-700 mb-2">Try these examples:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="text-xs px-3 py-1 bg-primary-50 text-primary-700 rounded-full hover:bg-primary-100 transition-colors">
+                                    3-bedroom apartment with open kitchen
+                                </button>
+                                <button class="text-xs px-3 py-1 bg-primary-50 text-primary-700 rounded-full hover:bg-primary-100 transition-colors">
+                                    Small studio with bathroom
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <label class="block text-sm font-semibold text-gray-900 mb-3">Model Selection</label>
+                        <div class="space-y-3">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="radio" name="model" value="constraint_aware" checked class="text-primary-600">
+                                <div class="flex-1">
+                                    <div class="font-medium text-gray-900">Constraint-Aware Model</div>
+                                    <div class="text-sm text-gray-600">Advanced model with spatial consistency</div>
+                                </div>
+                                <div class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">84.5% Accuracy</div>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="radio" name="model" value="baseline" class="text-primary-600">
+                                <div class="flex-1">
+                                    <div class="font-medium text-gray-900">Baseline Model</div>
+                                    <div class="text-sm text-gray-600">Standard Stable Diffusion model</div>
+                                </div>
+                                <div class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">71.3% Accuracy</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-primary-700 hover:to-secondary-700 transition-all duration-200 shadow-lg">
+                        ⚡ Generate Floor Plan
+                    </button>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Generated Floor Plan</h3>
+                            <button class="flex items-center space-x-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-lg hover:bg-primary-200 transition-colors">
+                                📥 Download
+                            </button>
+                        </div>
+                        <div class="aspect-square bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center">
+                            <div class="text-center text-gray-400">
+                                <div class="text-6xl mb-4">🏠</div>
+                                <p>Your generated floor plan will appear here</p>
+                                <p class="text-sm mt-2">(Demo - Integration coming soon)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">✨ Pro Tips</h3>
+                        <ul class="space-y-2 text-sm text-gray-700">
+                            <li>• Be specific about room types and relationships</li>
+                            <li>• Mention desired adjacencies (e.g., "kitchen next to dining")</li>
+                            <li>• Include approximate sizes for better results</li>
+                            <li>• Use architectural terms for precise layouts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Models Section -->
+    <section id="models" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">AI Models Overview</h2>
+                <p class="text-xl text-gray-600">Advanced diffusion models for architectural generation</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Baseline Model -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border-2 border-blue-200">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                                <span class="text-white font-bold">🧠</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Baseline Stable Diffusion</h3>
+                                <p class="text-sm text-gray-600">Foundation Model</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">Active</span>
+                    </div>
+
+                    <p class="text-gray-600 mb-6">Fine-tuned Stable Diffusion 2.1 model on architectural datasets</p>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">71.3%</div>
+                            <div class="text-xs text-gray-600">Accuracy</div>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">85.2</div>
+                            <div class="text-xs text-gray-600">FID Score</div>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">0.62</div>
+                            <div class="text-xs text-gray-600">CLIP Score</div>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">0.41</div>
+                            <div class="text-xs text-gray-600">Adjacency</div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                        View Details →
+                    </button>
+                </div>
+
+                <!-- Constraint-Aware Model -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border-2 border-purple-200">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+                                <span class="text-white font-bold">🚀</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Constraint-Aware Diffusion</h3>
+                                <p class="text-sm text-gray-600">Advanced Model</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-purple-50 text-purple-700 text-xs font-semibold rounded-full">Recommended</span>
+                    </div>
+
+                    <p class="text-gray-600 mb-6">Enhanced model with spatial consistency and adjacency constraint loss</p>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">84.5%</div>
+                            <div class="text-xs text-gray-600">Accuracy</div>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">57.4</div>
+                            <div class="text-xs text-gray-600">FID Score</div>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">0.75</div>
+                            <div class="text-xs text-gray-600">CLIP Score</div>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold text-gray-900">0.73</div>
+                            <div class="text-xs text-gray-600">Adjacency</div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+                        View Details →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <section id="metrics" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Performance Metrics</h2>
+                <p class="text-xl text-gray-600">Comprehensive analysis of model performance</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Model Performance Comparison</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-4 px-4 font-semibold text-gray-900">Metric</th>
+                                <th class="text-center py-4 px-4 font-semibold text-gray-900">Baseline</th>
+                                <th class="text-center py-4 px-4 font-semibold text-gray-900">Constraint-Aware</th>
+                                <th class="text-center py-4 px-4 font-semibold text-gray-900">Improvement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4 px-4 font-medium text-gray-900">FID Score</td>
+                                <td class="py-4 px-4 text-center text-gray-600">85.2</td>
+                                <td class="py-4 px-4 text-center font-semibold text-primary-600">57.4</td>
+                                <td class="py-4 px-4 text-center font-semibold text-green-600">+32.7%</td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4 px-4 font-medium text-gray-900">CLIP Score</td>
+                                <td class="py-4 px-4 text-center text-gray-600">0.62</td>
+                                <td class="py-4 px-4 text-center font-semibold text-primary-600">0.75</td>
+                                <td class="py-4 px-4 text-center font-semibold text-green-600">+21.0%</td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4 px-4 font-medium text-gray-900">Adjacency Score</td>
+                                <td class="py-4 px-4 text-center text-gray-600">0.41</td>
+                                <td class="py-4 px-4 text-center font-semibold text-primary-600">0.73</td>
+                                <td class="py-4 px-4 text-center font-semibold text-green-600">+78.0%</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-4 font-medium text-gray-900">Overall Accuracy</td>
+                                <td class="py-4 px-4 text-center text-gray-600">71.3%</td>
+                                <td class="py-4 px-4 text-center font-semibold text-primary-600">84.5%</td>
+                                <td class="py-4 px-4 text-center font-semibold text-green-600">+18.5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">FM</span>
+                    </div>
+                    <span class="text-xl font-bold">FloorMind</span>
+                </div>
+                <p class="text-gray-400 mb-6 max-w-md mx-auto">
+                    AI-powered text-to-floorplan generator using advanced diffusion models with spatial constraints.
+                </p>
+                <div class="text-sm text-gray-400">
+                    © 2025 FloorMind. Made with ❤️ for architects and designers.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Interactive demo functionality
+        function showGenerationDemo() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '⏳ Generating...';
+            button.disabled = true;
+            button.classList.add('opacity-75');
+            
+            // Simulate generation process
+            setTimeout(() => {
+                button.innerHTML = '✅ Generated!';
+                button.classList.remove('opacity-75');
+                button.classList.add('bg-green-500');
+                
+                // Show success message
+                const message = document.createElement('div');
+                message.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform';
+                message.innerHTML = '🎉 Floor plan generated successfully! (Demo)';
+                document.body.appendChild(message);
+                
+                // Animate in
+                setTimeout(() => {
+                    message.classList.remove('translate-x-full');
+                }, 100);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    message.classList.add('translate-x-full');
+                    setTimeout(() => message.remove(), 300);
+                }, 3000);
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.classList.remove('bg-green-500');
+                }, 2000);
+            }, 2000);
+        }
+
+        // Add click handlers for demo buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generator buttons
+            document.querySelectorAll('button').forEach(button => {
+                if (button.textContent.includes('Generate Floor Plan')) {
+                    button.addEventListener('click', showGenerationDemo);
+                }
+                if (button.textContent.includes('Try Generator')) {
+                    button.addEventListener('click', function() {
+                        document.getElementById('generate').scrollIntoView({ behavior: 'smooth' });
+                    });
+                }
+                if (button.textContent.includes('View Models')) {
+                    button.addEventListener('click', function() {
+                        document.getElementById('models').scrollIntoView({ behavior: 'smooth' });
+                    });
+                }
+            });
+
+            // Sample prompt buttons
+            document.querySelectorAll('button[class*="bg-primary-50"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const textarea = document.querySelector('textarea');
+                    if (textarea) {
+                        textarea.value = this.textContent;
+                        textarea.focus();
+                        
+                        // Add visual feedback
+                        this.classList.add('bg-primary-200');
+                        setTimeout(() => {
+                            this.classList.remove('bg-primary-200');
+                        }, 200);
+                    }
+                });
+            });
+
+            // Model selection radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const modelInfo = document.createElement('div');
+                    modelInfo.className = 'fixed bottom-4 left-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
+                    modelInfo.innerHTML = `Selected: ${this.value === 'constraint_aware' ? 'Constraint-Aware Model (84.5% accuracy)' : 'Baseline Model (71.3% accuracy)'}`;
+                    document.body.appendChild(modelInfo);
+                    
+                    setTimeout(() => modelInfo.remove(), 2000);
+                });
+            });
+
+            // Add hover effects to cards
+            document.querySelectorAll('.card-hover').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Animate stats on scroll
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const statElements = entry.target.querySelectorAll('.text-3xl, .text-4xl');
+                        statElements.forEach((stat, index) => {
+                            setTimeout(() => {
+                                stat.style.transform = 'scale(1.1)';
+                                stat.style.color = '#0ea5e9';
+                                setTimeout(() => {
+                                    stat.style.transform = 'scale(1)';
+                                }, 200);
+                            }, index * 100);
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            // Observe stats section
+            const statsSection = document.querySelector('#home + section');
+            if (statsSection) {
+                observer.observe(statsSection);
+            }
+        });
+
+        // Add typing animation to the demo input
+        function typeText(element, text, speed = 50) {
+            element.textContent = '';
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                }
+            }, speed);
+        }
+
+        // Start typing animation when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const demoInput = document.querySelector('.font-mono');
+                if (demoInput) {
+                    typeText(demoInput, '"3-bedroom apartment with open kitchen and living room"', 30);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

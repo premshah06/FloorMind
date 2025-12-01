@@ -1,0 +1,31 @@
+{
+  "train": {
+    "images_shape": [
+      3000,
+      512,
+      512,
+      3
+    ],
+    "descriptions_count": 3000,
+    "images_file": "train_images.npy",
+    "descriptions_file": "train_descriptions.npy"
+  },
+  "test": {
+    "images_shape": [
+      2000,
+      512,
+      512,
+      3
+    ],
+    "descriptions_count": 2000,
+    "images_file": "test_images.npy",
+    "descriptions_file": "test_descriptions.npy"
+  },
+  "image_format": "uint8",
+  "image_range": "[0, 255]",
+  "target_size": [
+    512,
+    512
+  ],
+  "created_at": "2025-10-25T18:12:22.512103"
+}

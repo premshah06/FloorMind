@@ -1,0 +1,91 @@
+{
+  "model_configuration": {
+    "base_model": "runwayml/stable-diffusion-v1-5",
+    "resolution": 512,
+    "architecture": "UNet2DConditionModel"
+  },
+  
+  "training_hyperparameters": {
+    "num_epochs": 15,
+    "train_batch_size": 2,
+    "eval_batch_size": 1,
+    "gradient_accumulation_steps": 4,
+    "effective_batch_size": 8,
+    "learning_rate": 5e-6,
+    "weight_decay": 0.01,
+    "max_grad_norm": 1.0,
+    "lr_scheduler": "cosine_with_restarts",
+    "lr_warmup_steps": 500,
+    "optimizer": "AdamW8bit"
+  },
+  
+  "diffusion_parameters": {
+    "num_train_timesteps": 1000,
+    "noise_schedule": "scaled_linear",
+    "prediction_type": "epsilon",
+    "beta_start": 0.00085,
+    "beta_end": 0.012
+  },
+  
+  "memory_optimization": {
+    "mixed_precision": "fp16",
+    "gradient_checkpointing": true,
+    "use_8bit_adam": true,
+    "enable_xformers": true,
+    "attention_slicing": true,
+    "vae_slicing": true
+  },
+  
+  "data_configuration": {
+    "dataloader_num_workers": 2,
+    "pin_memory": true,
+    "drop_last": true,
+    "shuffle_train": true
+  },
+  
+  "checkpointing": {
+    "save_steps": 500,
+    "eval_steps": 250,
+    "logging_steps": 50,
+    "save_total_limit": 3,
+    "save_best_only": false
+  },
+  
+  "metrics_tracking": {
+    "track_loss": true,
+    "track_learning_rate": true,
+    "track_gpu_memory": true,
+    "track_gradient_norm": true,
+    "compute_validation_metrics": true,
+    "save_training_curves": true
+  },
+  
+  "output_configuration": {
+    "save_model_format": ["safetensors", "pickle", "diffusers_pipeline"],
+    "generate_test_images": true,
+    "num_test_images": 4,
+    "test_inference_steps": 20,
+    "test_guidance_scale": 7.5
+  },
+  
+  "hardware_requirements": {
+    "recommended_gpu": "A100",
+    "minimum_vram_gb": 40,
+    "recommended_vram_gb": 80,
+    "cuda_version": "11.8+",
+    "pytorch_version": "2.0+"
+  },
+  
+  "notes": {
+    "description": "Optimized configuration for training FloorMind on Google Colab A100 GPU",
+    "memory_usage": "Approximately 35-40GB VRAM with these settings",
+    "training_time": "Approximately 4-6 hours for 15 epochs on CubiCasa5K dataset",
+    "best_practices": [
+      "Monitor GPU memory usage regularly",
+      "Save checkpoints frequently",
+      "Use gradient accumulation for larger effective batch sizes",
+      "Enable all memory optimizations for A100",
+      "Track comprehensive metrics for model evaluation"
+    ]
+  }
+}

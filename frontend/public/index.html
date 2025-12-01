@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="description" content="FloorMind - AI-Powered Text-to-Floorplan Generator. Transform natural language descriptions into detailed architectural floor plans using advanced diffusion models." />
+    <meta name="keywords" content="AI, floor plans, architecture, diffusion models, text-to-image, architectural design" />
+    <meta name="author" content="FloorMind Team" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://floormind.ai/" />
+    <meta property="og:title" content="FloorMind - AI-Powered Floor Plan Generator" />
+    <meta property="og:description" content="Transform natural language descriptions into detailed architectural floor plans using advanced AI models." />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://floormind.ai/" />
+    <meta property="twitter:title" content="FloorMind - AI-Powered Floor Plan Generator" />
+    <meta property="twitter:description" content="Transform natural language descriptions into detailed architectural floor plans using advanced AI models." />
+    <meta property="twitter:image" content="%PUBLIC_URL%/og-image.png" />
+
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title>FloorMind - AI-Powered Floor Plan Generator</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    
+    <!-- Loading animation -->
+    <style>
+      #root {
+        min-height: 100vh;
+      }
+      
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e5e7eb;
+        border-top: 4px solid #0ea5e9;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </body>
+</html>

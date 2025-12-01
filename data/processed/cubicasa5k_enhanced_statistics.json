@@ -1,0 +1,52 @@
+{
+  "dataset_info": {
+    "name": "CubiCasa5K Enhanced",
+    "total_samples": 5000,
+    "train_samples": 3000,
+    "test_samples": 2000,
+    "train_ratio": 0.6,
+    "categories": {
+      "high_quality_architectural": 3732,
+      "high_quality": 992,
+      "colorful": 276
+    },
+    "processing_date": "2025-10-25T18:12:23.811271"
+  },
+  "room_statistics": {
+    "mean_room_count": 2.4684,
+    "std_room_count": 0.981832082816489,
+    "min_room_count": 2,
+    "max_room_count": 8,
+    "room_count_distribution": {
+      "2": 3979,
+      "4": 875,
+      "6": 142,
+      "8": 4
+    }
+  },
+  "area_statistics": {
+    "mean_area": 393.5596,
+    "std_area": 166.71217543337252,
+    "min_area": 240.0,
+    "max_area": 1584.0
+  },
+  "image_statistics": {
+    "target_size": [
+      512,
+      512
+    ],
+    "mean_original_width": 946.0804,
+    "mean_original_height": 841.6042,
+    "mean_aspect_ratio": 1.1845844901557294,
+    "mean_file_size_kb": 427.4928
+  },
+  "feature_statistics": {
+    "balcony_percentage": 29.9,
+    "garage_percentage": 39.54,
+    "architectural_styles": {
+      "modern": 1701,
+      "contemporary": 1662,
+      "traditional": 1637
+    }
+  }
+}
