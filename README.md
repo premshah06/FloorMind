@@ -48,6 +48,10 @@ FloorMind is a production-ready AI system that leverages Stable Diffusion XL fin
 - **CubiCasa5K Dataset** - 5,050 architectural floor plans
 - **DPM++ Scheduler** - Fast, high-quality sampling
 
+## 🎥 Demo Video
+
+[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/zJ-p2vAFcCc)
+
 ## 🚀 Quick Start
 
 ### Prerequisites
