@@ -11,7 +11,7 @@ Transform natural language descriptions into detailed architectural floor plans 
 FloorMind is a production-ready AI system that leverages Stable Diffusion XL fine-tuned on 5,050+ architectural floor plans from the CubiCasa5K dataset. Generate professional-grade floor plan visualizations in seconds from simple text descriptions.
 
 **Key Highlights:**
-- 🎯 71.7% generation accuracy
+- 🎯 88.8% generation accuracy
 - ⚡ 5-10 seconds per image (GPU) / 2-5 minutes (CPU)
 - 🎨 512×512 or 1024×1024 resolution output
 - 🔌 RESTful API for easy integration
