@@ -50,7 +50,8 @@ FloorMind is a production-ready AI system that leverages Stable Diffusion XL fin
 
 ## 🎥 Demo Video
 
-[![Watch the demo](https://img.youtube.com/vi/zJ-p2vAFcCc/maxresdefault.jpg)](https://www.youtube.com/watch?v=zJ-p2vAFcCc)
+[![Watch the demo](https://img.youtube.com/vi/zJ-p2vAFcCc/hqdefault.jpg)](https://www.youtube.com/watch?v=zJ-p2vAFcCc)
+
 
 
 ## 🚀 Quick Start
