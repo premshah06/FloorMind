@@ -1,0 +1,142 @@
+{
+  "timestamp": "2025-12-01T12:25:49.972798",
+  "total_tests": 15,
+  "successful": 15,
+  "results": [
+    {
+      "id": 1,
+      "category": "Simple Residential",
+      "prompt": "2 bedroom apartment with living room and kitchen",
+      "score": 90,
+      "success": true,
+      "generation_time": 28.823177099227905,
+      "image_path": "test_results/test_01_20251201_121843.png"
+    },
+    {
+      "id": 2,
+      "category": "Simple Residential",
+      "prompt": "studio apartment with open floor plan",
+      "score": 90,
+      "success": true,
+      "generation_time": 28.648595333099365,
+      "image_path": "test_results/test_02_20251201_121912.png"
+    },
+    {
+      "id": 3,
+      "category": "Detailed Residential",
+      "prompt": "modern 3 bedroom apartment with open kitchen, living room, 2 bathrooms, and balcony",
+      "score": 90,
+      "success": true,
+      "generation_time": 30.195396900177002,
+      "image_path": "test_results/test_03_20251201_121942.png"
+    },
+    {
+      "id": 4,
+      "category": "Detailed Residential",
+      "prompt": "luxury 4 bedroom house with master suite, walk-in closet, dining room, and garage",
+      "score": 95,
+      "success": true,
+      "generation_time": 28.9848690032959,
+      "image_path": "test_results/test_04_20251201_122011.png"
+    },
+    {
+      "id": 5,
+      "category": "Detailed Residential",
+      "prompt": "compact 1 bedroom apartment with efficient layout, bathroom, and kitchenette",
+      "score": 90,
+      "success": true,
+      "generation_time": 28.996730089187622,
+      "image_path": "test_results/test_05_20251201_122040.png"
+    },
+    {
+      "id": 6,
+      "category": "Architectural Style",
+      "prompt": "minimalist modern apartment with open concept living space",
+      "score": 90,
+      "success": true,
+      "generation_time": 29.345036029815674,
+      "image_path": "test_results/test_06_20251201_122110.png"
+    },
+    {
+      "id": 7,
+      "category": "Architectural Style",
+      "prompt": "traditional family home with separate dining room and den",
+      "score": 90,
+      "success": true,
+      "generation_time": 29.392783164978027,
+      "image_path": "test_results/test_07_20251201_122139.png"
+    },
+    {
+      "id": 8,
+      "category": "Commercial",
+      "prompt": "small office space with reception area, 3 offices, and conference room",
+      "score": 95,
+      "success": true,
+      "generation_time": 29.582826137542725,
+      "image_path": "test_results/test_08_20251201_122209.png"
+    },
+    {
+      "id": 9,
+      "category": "Commercial",
+      "prompt": "retail store with open floor plan and storage room",
+      "score": 85,
+      "success": true,
+      "generation_time": 30.124175786972046,
+      "image_path": "test_results/test_09_20251201_122239.png"
+    },
+    {
+      "id": 10,
+      "category": "Feature Focused",
+      "prompt": "apartment with large windows, open kitchen, and spacious living area",
+      "score": 85,
+      "success": true,
+      "generation_time": 30.696144819259644,
+      "image_path": "test_results/test_10_20251201_122309.png"
+    },
+    {
+      "id": 11,
+      "category": "Feature Focused",
+      "prompt": "house with central hallway connecting all rooms",
+      "score": 85,
+      "success": true,
+      "generation_time": 31.017220973968506,
+      "image_path": "test_results/test_11_20251201_122340.png"
+    },
+    {
+      "id": 12,
+      "category": "Feature Focused",
+      "prompt": "apartment with L-shaped layout and corner balcony",
+      "score": 85,
+      "success": true,
+      "generation_time": 31.177595853805542,
+      "image_path": "test_results/test_12_20251201_122412.png"
+    },
+    {
+      "id": 13,
+      "category": "Size Variation",
+      "prompt": "small efficient 1 bedroom apartment",
+      "score": 80,
+      "success": true,
+      "generation_time": 31.45708703994751,
+      "image_path": "test_results/test_13_20251201_122443.png"
+    },
+    {
+      "id": 14,
+      "category": "Size Variation",
+      "prompt": "spacious 5 bedroom family home with multiple bathrooms",
+      "score": 85,
+      "success": true,
+      "generation_time": 32.27895402908325,
+      "image_path": "test_results/test_14_20251201_122515.png"
+    },
+    {
+      "id": 15,
+      "category": "Complex Layout",
+      "prompt": "multi-level apartment with split bedroom layout and open living area",
+      "score": 85,
+      "success": true,
+      "generation_time": 34.14933681488037,
+      "image_path": "test_results/test_15_20251201_122549.png"
+    }
+  ]
+}

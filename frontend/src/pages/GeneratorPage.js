@@ -4,8 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Settings2, Download, RefreshCw, Wand2, Clock, Image as ImageIcon, AlertCircle, History, ChevronDown, ChevronUp, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import floorMindAPI from '../services/api';
+import { useModel } from '../context/ModelContext';
 
 const GeneratorPage = () => {
+  // Use global model state
+  const { modelLoaded, modelInfo, setModelLoaded, setModelInfo } = useModel();
   // Load persisted state from localStorage
   const loadPersistedState = () => {
     try {
@@ -27,13 +30,11 @@ const GeneratorPage = () => {
   const [generationMetrics, setGenerationMetrics] = useState(persistedState?.generationMetrics || null);
   const [style, setStyle] = useState(persistedState?.style || 'modern');
   const [apiStatus, setApiStatus] = useState('checking'); // checking, online, offline, loading_model
-  const [modelInfo, setModelInfo] = useState(null);
   const [presets, setPresets] = useState(null);
-  const [modelLoaded, setModelLoaded] = useState(false);
   const [showFamousPlans, setShowFamousPlans] = useState(persistedState?.showFamousPlans || false);
   const [estimatedTime, setEstimatedTime] = useState(8); // Default 8 seconds
 
-  // Persist state to localStorage whenever it changes
+  // Persist state to localStorage whenever it changes (excluding modelLoaded/modelInfo - now in global context)
   useEffect(() => {
     const stateToSave = {
       prompt,
@@ -67,13 +68,25 @@ const GeneratorPage = () => {
         // Check API health
         await floorMindAPI.checkHealth();
         setApiStatus('online');
-        toast.success('FloorMind AI is ready!');
+        
+        // Only show success toast if model wasn't already loaded
+        if (!modelLoaded) {
+          toast.success('FloorMind AI is ready!');
+        }
 
-        // Load model info
+        // Load model info - always check with API for fresh status
         try {
           const info = await floorMindAPI.getModelInfo();
+          const isLoaded = info.model_info?.is_loaded || false;
+          
+          // Update global state with fresh data from API
           setModelInfo(info.model_info);
-          setModelLoaded(info.model_info?.is_loaded || false);
+          setModelLoaded(isLoaded);
+          
+          // Show toast if model status changed
+          if (isLoaded && !modelLoaded) {
+            toast.success('Model is loaded and ready!');
+          }
         } catch (error) {
           console.warn('Could not load model info:', error);
         }
@@ -94,7 +107,7 @@ const GeneratorPage = () => {
     };
 
     initializeAPI();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get sample prompts from presets or use defaults
   const samplePrompts = presets?.residential || [
@@ -308,8 +321,8 @@ const GeneratorPage = () => {
         const existingHistory = JSON.parse(localStorage.getItem('floorplanHistory') || '[]');
         existingHistory.unshift(historyItem); // Add to beginning
         
-        // Keep only last 50 items
-        const trimmedHistory = existingHistory.slice(0, 50);
+        // Keep only last 150 items
+        const trimmedHistory = existingHistory.slice(0, 150);
         localStorage.setItem('floorplanHistory', JSON.stringify(trimmedHistory));
       }
 
